@@ -10,6 +10,11 @@
           "deadband": "Room temperature deadband (°C)",
           "delta_max": "Maximum temperature offset (°C)",
           "idle_offset": "Offset when there is no room deficit (°C)"
+        },
+        "data_description": {
+          "deadband": "Room temperature gaps up to this value use the idle offset instead of increasing the heat-pump target. Default: 0.2 °C.",
+          "delta_max": "Maximum amount added to the Atlantic climate's current temperature when rooms need heat. Default: 6 °C.",
+          "idle_offset": "Temperature offset used when a room is in heating mode but its temperature gap is within the deadband. A negative value lowers the heat-pump target. Default: -0.5 °C."
         }
       }
     },
@@ -22,12 +27,18 @@
     "step": {
       "init": {
         "title": "Atlantic heat-pump controller",
+        "description": "Adjust how room temperature demand changes the Atlantic heat-pump target.",
         "data": {
           "target_climate": "Atlantic climate",
           "room_climates": "Room valve climates",
           "deadband": "Room temperature deadband (°C)",
           "delta_max": "Maximum temperature offset (°C)",
           "idle_offset": "Offset when there is no room deficit (°C)"
+        },
+        "data_description": {
+          "deadband": "Room temperature gaps up to this value use the idle offset instead of increasing the heat-pump target. Default: 0.2 °C.",
+          "delta_max": "Maximum amount added to the Atlantic climate's current temperature when rooms need heat. Default: 6 °C.",
+          "idle_offset": "Temperature offset used when a room is in heating mode but its temperature gap is within the deadband. A negative value lowers the heat-pump target. Default: -0.5 °C."
         }
       }
     },

@@ -1,0 +1,50 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Régulation de la pompe à chaleur Atlantic",
+        "description": "Sélectionnez le climat Atlantic piloté par cette intégration et les climats des pièces représentant les vannes. Le climat Atlantic doit fournir sa température actuelle.",
+        "data": {
+          "target_climate": "Climat Atlantic",
+          "room_climates": "Climats des vannes des pièces",
+          "deadband": "Marge de température des pièces (°C)",
+          "delta_max": "Correction maximale de température (°C)",
+          "idle_offset": "Correction en l'absence de déficit (°C)"
+        },
+        "data_description": {
+          "deadband": "Pour un écart entre température et consigne inférieur ou égal à cette valeur, la correction idle est utilisée au lieu d'augmenter la cible de la pompe à chaleur. Valeur par défaut : 0,2 °C.",
+          "delta_max": "Limite maximale ajoutée à la température actuelle du climat Atlantic lorsque les pièces demandent du chauffage. Valeur par défaut : 6 °C.",
+          "idle_offset": "Correction appliquée lorsqu'une pièce est en mode chauffage mais que son écart de température reste dans la marge. Une valeur négative abaisse la cible de la pompe à chaleur. Valeur par défaut : -0,5 °C."
+        }
+      }
+    },
+    "error": {
+      "no_rooms": "Sélectionnez au moins un climat de pièce.",
+      "target_is_room": "Le climat Atlantic ne peut pas également être sélectionné comme climat de pièce."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Régulation de la pompe à chaleur Atlantic",
+        "description": "Réglez l'effet de la demande des pièces sur la cible de la pompe à chaleur Atlantic.",
+        "data": {
+          "target_climate": "Climat Atlantic",
+          "room_climates": "Climats des vannes des pièces",
+          "deadband": "Marge de température des pièces (°C)",
+          "delta_max": "Correction maximale de température (°C)",
+          "idle_offset": "Correction en l'absence de déficit (°C)"
+        },
+        "data_description": {
+          "deadband": "Pour un écart entre température et consigne inférieur ou égal à cette valeur, la correction idle est utilisée au lieu d'augmenter la cible de la pompe à chaleur. Valeur par défaut : 0,2 °C.",
+          "delta_max": "Limite maximale ajoutée à la température actuelle du climat Atlantic lorsque les pièces demandent du chauffage. Valeur par défaut : 6 °C.",
+          "idle_offset": "Correction appliquée lorsqu'une pièce est en mode chauffage mais que son écart de température reste dans la marge. Une valeur négative abaisse la cible de la pompe à chaleur. Valeur par défaut : -0,5 °C."
+        }
+      }
+    },
+    "error": {
+      "no_rooms": "Sélectionnez au moins un climat de pièce.",
+      "target_is_room": "Le climat Atlantic ne peut pas également être sélectionné comme climat de pièce."
+    }
+  }
+}
