@@ -27,11 +27,11 @@ The Atlantic climate must expose a `current_temperature` attribute, which is use
 ## Initial control behavior
 
 - If at least one room climate is in `heat`, the Atlantic climate is set to `heat`.
-- The largest room temperature deficit (`target - current`) determines a temperature offset. The original piecewise modulation curve is retained and capped by `delta_max`.
+- The largest room temperature deficit (`target - current`) determines a positive temperature offset. If every heating room is at or above its target, the largest overshoot determines a negative offset using the same modulation curve. Gaps within the deadband produce no offset, and `delta_max` caps the offset in either direction.
 - The Atlantic target is the Atlantic climate's current temperature plus the offset, limited to 15–28 °C and rounded to 0.5 °C.
 - If every room climate is available and none is in `heat`, the Atlantic climate is set to `off`.
 - If room climates are unavailable, the integration leaves the Atlantic mode unchanged rather than treating missing data as an explicit demand to turn off.
 
-Defaults are a 0.2 °C deadband, a 6 °C maximum offset, and a -0.5 °C offset when all active rooms are already at their target. These values can be changed in the integration options.
+Defaults are a 0.2 °C deadband and a 6 °C maximum absolute offset. These values can be changed in the integration options.
 
 This is an initial, deliberately small controller. It does not implement an independent watchdog or a frost-protection fallback; those behaviors should be added in Home Assistant if required.

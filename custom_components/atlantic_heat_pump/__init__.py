@@ -16,13 +16,11 @@ from homeassistant.helpers.event import async_track_state_change_event
 from .const import (
     CONF_DEADBAND,
     CONF_DELTA_MAX,
-    CONF_IDLE_OFFSET,
     CONF_ROOM_CLIMATES,
     CONF_TARGET_CLIMATE,
     DOMAIN,
     DEFAULT_DEADBAND,
     DEFAULT_DELTA_MAX,
-    DEFAULT_IDLE_OFFSET,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -65,7 +63,6 @@ class AtlanticHeatPumpController:
         self.room_climates: list[str] = config[CONF_ROOM_CLIMATES]
         self.deadband: float = float(config.get(CONF_DEADBAND, DEFAULT_DEADBAND))
         self.delta_max: float = float(config.get(CONF_DELTA_MAX, DEFAULT_DELTA_MAX))
-        self.idle_offset: float = float(config.get(CONF_IDLE_OFFSET, DEFAULT_IDLE_OFFSET))
         self._lock = asyncio.Lock()
         self._unsubscribe: Callable[[], None] | None = None
 
@@ -142,7 +139,13 @@ class AtlanticHeatPumpController:
                 )
                 return
 
-            delta = self._delta_for_deficit(max(deficits))
+            largest_deficit = max(deficits)
+            if largest_deficit > self.deadband:
+                delta = self._delta_for_deficit(largest_deficit)
+            elif largest_deficit <= 0:
+                delta = -self._delta_for_deficit(abs(min(deficits)))
+            else:
+                delta = 0.0
             target_temperature = self._round_half_degree(
                 min(28.0, max(15.0, reference_temperature + delta))
             )
@@ -185,9 +188,9 @@ class AtlanticHeatPumpController:
             _LOGGER.exception("Failed to set %s to HVAC mode %s", self.target_climate, mode)
 
     def _delta_for_deficit(self, deficit: float) -> float:
-        """Map room temperature deficit to a bounded heat-pump offset."""
+        """Map an absolute room temperature gap to a bounded heat-pump offset."""
         if deficit <= self.deadband:
-            return self.idle_offset
+            return 0.0
         if deficit < 1.0:
             fraction = (deficit - self.deadband) / (1.0 - self.deadband)
             delta = 0.5 + fraction

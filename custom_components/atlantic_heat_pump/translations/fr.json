@@ -8,13 +8,11 @@
           "target_climate": "Climat Atlantic",
           "room_climates": "Climats des vannes des pièces",
           "deadband": "Marge de température des pièces (°C)",
-          "delta_max": "Correction maximale de température (°C)",
-          "idle_offset": "Correction en l'absence de déficit (°C)"
+          "delta_max": "Correction maximale de température (°C)"
         },
         "data_description": {
-          "deadband": "Pour un écart entre température et consigne inférieur ou égal à cette valeur, la correction idle est utilisée au lieu d'augmenter la cible de la pompe à chaleur. Valeur par défaut : 0,2 °C.",
-          "delta_max": "Limite maximale ajoutée à la température actuelle du climat Atlantic lorsque les pièces demandent du chauffage. Valeur par défaut : 6 °C.",
-          "idle_offset": "Correction appliquée lorsqu'une pièce est en mode chauffage mais que son écart de température reste dans la marge. Une valeur négative abaisse la cible de la pompe à chaleur. Valeur par défaut : -0,5 °C."
+          "deadband": "Les écarts inférieurs ou égaux à cette valeur ne produisent aucune correction. Au-delà, le plus grand déficit augmente la cible ; si toutes les pièces en chauffage dépassent leur consigne, le plus grand dépassement la diminue. Valeur par défaut : 0,2 °C.",
+          "delta_max": "Correction absolue maximale par rapport à la température actuelle du climat Atlantic, à la hausse comme à la baisse. Valeur par défaut : 6 °C."
         }
       }
     },
@@ -32,13 +30,11 @@
           "target_climate": "Climat Atlantic",
           "room_climates": "Climats des vannes des pièces",
           "deadband": "Marge de température des pièces (°C)",
-          "delta_max": "Correction maximale de température (°C)",
-          "idle_offset": "Correction en l'absence de déficit (°C)"
+          "delta_max": "Correction maximale de température (°C)"
         },
         "data_description": {
-          "deadband": "Pour un écart entre température et consigne inférieur ou égal à cette valeur, la correction idle est utilisée au lieu d'augmenter la cible de la pompe à chaleur. Valeur par défaut : 0,2 °C.",
-          "delta_max": "Limite maximale ajoutée à la température actuelle du climat Atlantic lorsque les pièces demandent du chauffage. Valeur par défaut : 6 °C.",
-          "idle_offset": "Correction appliquée lorsqu'une pièce est en mode chauffage mais que son écart de température reste dans la marge. Une valeur négative abaisse la cible de la pompe à chaleur. Valeur par défaut : -0,5 °C."
+          "deadband": "Les écarts inférieurs ou égaux à cette valeur ne produisent aucune correction. Au-delà, le plus grand déficit augmente la cible ; si toutes les pièces en chauffage dépassent leur consigne, le plus grand dépassement la diminue. Valeur par défaut : 0,2 °C.",
+          "delta_max": "Correction absolue maximale par rapport à la température actuelle du climat Atlantic, à la hausse comme à la baisse. Valeur par défaut : 6 °C."
         }
       }
     },

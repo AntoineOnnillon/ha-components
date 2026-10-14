@@ -21,12 +21,10 @@ from homeassistant.helpers.selector import (
 from .const import (
     CONF_DEADBAND,
     CONF_DELTA_MAX,
-    CONF_IDLE_OFFSET,
     CONF_ROOM_CLIMATES,
     CONF_TARGET_CLIMATE,
     DEFAULT_DEADBAND,
     DEFAULT_DELTA_MAX,
-    DEFAULT_IDLE_OFFSET,
     DOMAIN,
 )
 
@@ -69,17 +67,6 @@ def _data_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
                     min=0.5,
                     max=15,
                     step=0.5,
-                    mode=NumberSelectorMode.BOX,
-                )
-            ),
-            vol.Required(
-                CONF_IDLE_OFFSET,
-                default=defaults.get(CONF_IDLE_OFFSET, DEFAULT_IDLE_OFFSET),
-            ): NumberSelector(
-                NumberSelectorConfig(
-                    min=-3,
-                    max=3,
-                    step=0.1,
                     mode=NumberSelectorMode.BOX,
                 )
             ),
