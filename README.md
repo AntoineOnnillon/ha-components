@@ -4,7 +4,18 @@ This Home Assistant custom integration moves the room-demand calculation out of 
 
 ## Installation
 
-Copy `custom_components/atlantic_heat_pump` into the `custom_components` directory of Home Assistant, then restart Home Assistant. Add **Atlantic Heat Pump Controller** from **Settings → Devices & services → Add integration**.
+### HACS
+
+In HACS, add `AntoineOnnillon/ha-components` as a custom repository with the
+category **Integration**, then install **Atlantic Heat Pump Controller**.
+Restart Home Assistant and add the integration from **Settings → Devices &
+services → Add integration**.
+
+### Manual
+
+Copy `custom_components/atlantic_heat_pump` into the `custom_components`
+directory of Home Assistant, then restart Home Assistant. Add **Atlantic Heat
+Pump Controller** from **Settings → Devices & services → Add integration**.
 
 Select:
 
