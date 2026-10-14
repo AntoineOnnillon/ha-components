@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Atlantic heat-pump controller",
+        "description": "Select the Atlantic climate controlled by this integration, the reference temperature sensor, and the room climates representing the valves.",
+        "data": {
+          "target_climate": "Atlantic climate",
+          "reference_sensor": "Reference temperature sensor",
+          "room_climates": "Room valve climates",
+          "deadband": "Room temperature deadband (°C)",
+          "delta_max": "Maximum temperature offset (°C)",
+          "idle_offset": "Offset when there is no room deficit (°C)"
+        }
+      }
+    },
+    "error": {
+      "no_rooms": "Select at least one room climate.",
+      "target_is_room": "The Atlantic climate cannot also be selected as a room climate."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Atlantic heat-pump controller",
+        "data": {
+          "target_climate": "Atlantic climate",
+          "reference_sensor": "Reference temperature sensor",
+          "room_climates": "Room valve climates",
+          "deadband": "Room temperature deadband (°C)",
+          "delta_max": "Maximum temperature offset (°C)",
+          "idle_offset": "Offset when there is no room deficit (°C)"
+        }
+      }
+    },
+    "error": {
+      "no_rooms": "Select at least one room climate.",
+      "target_is_room": "The Atlantic climate cannot also be selected as a room climate."
+    }
+  }
+}
