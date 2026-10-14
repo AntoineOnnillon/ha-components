@@ -11,8 +11,8 @@
           "delta_max": "Maximum temperature offset (°C)"
         },
         "data_description": {
-          "deadband": "Temperature gaps up to this value produce no offset. Above it, the largest room deficit raises the target; if all heating rooms are above their setpoints, the largest overshoot lowers it. Default: 0.2 °C.",
-          "delta_max": "Maximum absolute offset from the Atlantic climate's current temperature, both upward and downward. Default: 6 °C."
+          "deadband": "Temperature differences within this range produce no offset. Above it, the largest room deficit raises the target; if all heating rooms are above their setpoints, the smallest overshoot lowers it. Default: 0.2 °C.",
+          "delta_max": "Maximum absolute offset from the Atlantic climate's current temperature. Default: 6 °C."
         }
       }
     },
@@ -33,8 +33,8 @@
           "delta_max": "Maximum temperature offset (°C)"
         },
         "data_description": {
-          "deadband": "Temperature gaps up to this value produce no offset. Above it, the largest room deficit raises the target; if all heating rooms are above their setpoints, the largest overshoot lowers it. Default: 0.2 °C.",
-          "delta_max": "Maximum absolute offset from the Atlantic climate's current temperature, both upward and downward. Default: 6 °C."
+          "deadband": "Temperature differences within this range produce no offset. Above it, the largest room deficit raises the target; if all heating rooms are above their setpoints, the smallest overshoot lowers it. Default: 0.2 °C.",
+          "delta_max": "Maximum absolute offset from the Atlantic climate's current temperature. Default: 6 °C."
         }
       }
     },

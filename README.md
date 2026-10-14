@@ -27,7 +27,7 @@ The Atlantic climate must expose a `current_temperature` attribute, which is use
 ## Initial control behavior
 
 - If at least one room climate is in `heat`, the Atlantic climate is set to `heat`.
-- The largest room temperature deficit (`target - current`) determines a positive temperature offset. If every heating room is at or above its target, the largest overshoot determines a negative offset using the same modulation curve. Gaps within the deadband produce no offset, and `delta_max` caps the offset in either direction.
+- The largest room deficit (`target - current`) among heating rooms determines a positive offset through the modulation curve. If every heating room is above its target, the least negative difference is applied directly as a negative offset. Differences within the deadband produce no offset, and `delta_max` caps the offset in either direction.
 - The Atlantic target is the Atlantic climate's current temperature plus the offset, limited to 15–28 °C and rounded to 0.5 °C.
 - If every room climate is available and none is in `heat`, the Atlantic climate is set to `off`.
 - If room climates are unavailable, the integration leaves the Atlantic mode unchanged rather than treating missing data as an explicit demand to turn off.

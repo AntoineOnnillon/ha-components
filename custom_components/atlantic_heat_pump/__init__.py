@@ -142,8 +142,8 @@ class AtlanticHeatPumpController:
             largest_deficit = max(deficits)
             if largest_deficit > self.deadband:
                 delta = self._delta_for_deficit(largest_deficit)
-            elif largest_deficit <= 0:
-                delta = -self._delta_for_deficit(abs(min(deficits)))
+            elif largest_deficit < -self.deadband:
+                delta = max(-self.delta_max, largest_deficit)
             else:
                 delta = 0.0
             target_temperature = self._round_half_degree(
@@ -188,7 +188,7 @@ class AtlanticHeatPumpController:
             _LOGGER.exception("Failed to set %s to HVAC mode %s", self.target_climate, mode)
 
     def _delta_for_deficit(self, deficit: float) -> float:
-        """Map an absolute room temperature gap to a bounded heat-pump offset."""
+        """Map a positive room deficit to a bounded heat-pump offset."""
         if deficit <= self.deadband:
             return 0.0
         if deficit < 1.0:

@@ -11,8 +11,8 @@
           "delta_max": "Correction maximale de température (°C)"
         },
         "data_description": {
-          "deadband": "Les écarts inférieurs ou égaux à cette valeur ne produisent aucune correction. Au-delà, le plus grand déficit augmente la cible ; si toutes les pièces en chauffage dépassent leur consigne, le plus grand dépassement la diminue. Valeur par défaut : 0,2 °C.",
-          "delta_max": "Correction absolue maximale par rapport à la température actuelle du climat Atlantic, à la hausse comme à la baisse. Valeur par défaut : 6 °C."
+          "deadband": "Les écarts dans cette plage ne produisent aucune correction. Au-delà, le plus grand déficit augmente la cible ; si toutes les pièces en chauffage dépassent leur consigne, le plus petit dépassement la diminue. Valeur par défaut : 0,2 °C.",
+          "delta_max": "Correction absolue maximale par rapport à la température actuelle du climat Atlantic. Valeur par défaut : 6 °C."
         }
       }
     },
@@ -33,8 +33,8 @@
           "delta_max": "Correction maximale de température (°C)"
         },
         "data_description": {
-          "deadband": "Les écarts inférieurs ou égaux à cette valeur ne produisent aucune correction. Au-delà, le plus grand déficit augmente la cible ; si toutes les pièces en chauffage dépassent leur consigne, le plus grand dépassement la diminue. Valeur par défaut : 0,2 °C.",
-          "delta_max": "Correction absolue maximale par rapport à la température actuelle du climat Atlantic, à la hausse comme à la baisse. Valeur par défaut : 6 °C."
+          "deadband": "Les écarts dans cette plage ne produisent aucune correction. Au-delà, le plus grand déficit augmente la cible ; si toutes les pièces en chauffage dépassent leur consigne, le plus petit dépassement la diminue. Valeur par défaut : 0,2 °C.",
+          "delta_max": "Correction absolue maximale par rapport à la température actuelle du climat Atlantic. Valeur par défaut : 6 °C."
         }
       }
     },
