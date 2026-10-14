@@ -34,4 +34,6 @@ The Atlantic climate must expose a `current_temperature` attribute, which is use
 
 Defaults are a 0.2 °C deadband and a 6 °C maximum absolute offset. These values can be changed in the integration options.
 
+The integration also creates a diagnostic device with sensors for the Atlantic current temperature, the largest TRV temperature difference, the applied offset, the calculated Atlantic target, and the number of TRVs in heating mode. Difference, offset, and calculated target are unavailable when no valid heating demand can be calculated.
+
 This is an initial, deliberately small controller. It does not implement an independent watchdog or a frost-protection fallback; those behaviors should be added in Home Assistant if required.

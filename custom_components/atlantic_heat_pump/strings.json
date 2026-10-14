@@ -42,5 +42,24 @@
       "no_rooms": "Select at least one room climate.",
       "target_is_room": "The Atlantic climate cannot also be selected as a room climate."
     }
+  },
+  "entity": {
+    "sensor": {
+      "reference_temperature": {
+        "name": "Atlantic current temperature"
+      },
+      "largest_room_difference": {
+        "name": "Largest TRV temperature difference"
+      },
+      "applied_delta": {
+        "name": "Applied temperature offset"
+      },
+      "calculated_target": {
+        "name": "Calculated Atlantic target"
+      },
+      "heating_room_count": {
+        "name": "Heating TRV count"
+      }
+    }
   }
 }

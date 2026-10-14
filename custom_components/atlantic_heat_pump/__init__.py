@@ -9,8 +9,10 @@ from collections.abc import Callable
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import Event, HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_track_state_change_event
 
 from .const import (
@@ -24,6 +26,11 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+PLATFORMS = [Platform.SENSOR]
+
+
+def _diagnostics_signal(entry_id: str) -> str:
+    return f"{DOMAIN}_{entry_id}_diagnostics"
 
 
 async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
@@ -35,10 +42,11 @@ async def async_setup(hass: HomeAssistant, config: dict[str, Any]) -> bool:
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up a configured controller."""
     config = {**entry.data, **entry.options}
-    controller = AtlanticHeatPumpController(hass, config)
+    controller = AtlanticHeatPumpController(hass, entry.entry_id, config)
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = controller
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
     await controller.async_start()
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
 
@@ -49,6 +57,9 @@ async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a configured controller."""
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    if not unload_ok:
+        return False
     controller: AtlanticHeatPumpController = hass.data[DOMAIN].pop(entry.entry_id)
     controller.async_stop()
     return True
@@ -57,14 +68,31 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 class AtlanticHeatPumpController:
     """Apply room demand to the Atlantic climate entity."""
 
-    def __init__(self, hass: HomeAssistant, config: dict[str, Any]) -> None:
+    def __init__(
+        self, hass: HomeAssistant, entry_id: str, config: dict[str, Any]
+    ) -> None:
         self.hass = hass
+        self.entry_id = entry_id
         self.target_climate: str = config[CONF_TARGET_CLIMATE]
         self.room_climates: list[str] = config[CONF_ROOM_CLIMATES]
         self.deadband: float = float(config.get(CONF_DEADBAND, DEFAULT_DEADBAND))
         self.delta_max: float = float(config.get(CONF_DELTA_MAX, DEFAULT_DELTA_MAX))
         self._lock = asyncio.Lock()
         self._unsubscribe: Callable[[], None] | None = None
+        self.diagnostics: dict[str, float | int | None] = {
+            "reference_temperature": None,
+            "largest_room_difference": None,
+            "applied_delta": None,
+            "calculated_target": None,
+            "heating_room_count": 0,
+        }
+
+    def _set_diagnostics(self, **values: float | int | None) -> None:
+        """Store and publish current controller diagnostics."""
+        if all(self.diagnostics.get(key) == value for key, value in values.items()):
+            return
+        self.diagnostics.update(values)
+        async_dispatcher_send(self.hass, _diagnostics_signal(self.entry_id))
 
     async def async_start(self) -> None:
         """Watch the configured entities and apply the initial state."""
@@ -98,6 +126,19 @@ class AtlanticHeatPumpController:
                 for entity_id, state in zip(self.room_climates, room_states)
                 if state is None or state.state in ("unknown", "unavailable")
             ]
+            target_state = self.hass.states.get(self.target_climate)
+            reference_temperature = self._number(
+                target_state.attributes.get("current_temperature")
+                if target_state is not None
+                else None
+            )
+            self._set_diagnostics(
+                reference_temperature=reference_temperature,
+                largest_room_difference=None,
+                applied_delta=None,
+                calculated_target=None,
+                heating_room_count=len(heating_rooms),
+            )
 
             if not heating_rooms:
                 if unavailable_rooms:
@@ -112,12 +153,6 @@ class AtlanticHeatPumpController:
 
             await self._async_set_hvac_mode("heat")
 
-            target_state = self.hass.states.get(self.target_climate)
-            reference_temperature = self._number(
-                target_state.attributes.get("current_temperature")
-                if target_state is not None
-                else None
-            )
             if reference_temperature is None:
                 _LOGGER.warning(
                     "Cannot calculate the Atlantic setpoint: %s has no valid current temperature",
@@ -148,6 +183,11 @@ class AtlanticHeatPumpController:
                 delta = 0.0
             target_temperature = self._round_half_degree(
                 min(28.0, max(15.0, reference_temperature + delta))
+            )
+            self._set_diagnostics(
+                largest_room_difference=largest_deficit,
+                applied_delta=delta,
+                calculated_target=target_temperature,
             )
             current_target = (
                 self._number(target_state.attributes.get("temperature"))

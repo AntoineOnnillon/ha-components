@@ -42,5 +42,24 @@
       "no_rooms": "Sélectionnez au moins un climat de pièce.",
       "target_is_room": "Le climat Atlantic ne peut pas également être sélectionné comme climat de pièce."
     }
+  },
+  "entity": {
+    "sensor": {
+      "reference_temperature": {
+        "name": "Température actuelle Atlantic"
+      },
+      "largest_room_difference": {
+        "name": "Plus grand écart des TRV"
+      },
+      "applied_delta": {
+        "name": "Correction de température appliquée"
+      },
+      "calculated_target": {
+        "name": "Consigne Atlantic calculée"
+      },
+      "heating_room_count": {
+        "name": "Nombre de TRV en chauffage"
+      }
+    }
   }
 }
