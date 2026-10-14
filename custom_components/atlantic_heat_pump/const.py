@@ -1,7 +1,6 @@
 DOMAIN = "atlantic_heat_pump"
 
 CONF_TARGET_CLIMATE = "target_climate"
-CONF_REFERENCE_SENSOR = "reference_sensor"
 CONF_ROOM_CLIMATES = "room_climates"
 CONF_DEADBAND = "deadband"
 CONF_DELTA_MAX = "delta_max"

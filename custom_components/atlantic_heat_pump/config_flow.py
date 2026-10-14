@@ -22,7 +22,6 @@ from .const import (
     CONF_DEADBAND,
     CONF_DELTA_MAX,
     CONF_IDLE_OFFSET,
-    CONF_REFERENCE_SENSOR,
     CONF_ROOM_CLIMATES,
     CONF_TARGET_CLIMATE,
     DEFAULT_DEADBAND,
@@ -44,9 +43,6 @@ def _data_schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
         {
             required_entity(CONF_TARGET_CLIMATE): EntitySelector(
                 EntitySelectorConfig(domain="climate")
-            ),
-            required_entity(CONF_REFERENCE_SENSOR): EntitySelector(
-                EntitySelectorConfig(domain="sensor")
             ),
             vol.Required(
                 CONF_ROOM_CLIMATES,

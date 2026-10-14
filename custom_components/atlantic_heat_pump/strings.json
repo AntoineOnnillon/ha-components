@@ -3,10 +3,9 @@
     "step": {
       "user": {
         "title": "Atlantic heat-pump controller",
-        "description": "Select the Atlantic climate controlled by this integration, the reference temperature sensor, and the room climates representing the valves.",
+        "description": "Select the Atlantic climate controlled by this integration and the room climates representing the valves. The Atlantic climate must provide its current temperature.",
         "data": {
           "target_climate": "Atlantic climate",
-          "reference_sensor": "Reference temperature sensor",
           "room_climates": "Room valve climates",
           "deadband": "Room temperature deadband (°C)",
           "delta_max": "Maximum temperature offset (°C)",
@@ -25,7 +24,6 @@
         "title": "Atlantic heat-pump controller",
         "data": {
           "target_climate": "Atlantic climate",
-          "reference_sensor": "Reference temperature sensor",
           "room_climates": "Room valve climates",
           "deadband": "Room temperature deadband (°C)",
           "delta_max": "Maximum temperature offset (°C)",

@@ -20,16 +20,15 @@ Pump Controller** from **Settings → Devices & services → Add integration**.
 Select:
 
 - the Atlantic climate exposed by ESPHome;
-- a temperature sensor used as the reference temperature;
 - one or more room climates exposed by the TRL valves.
 
-Room climates must expose `current_temperature` and `temperature` attributes. The integration considers a valve active when its HVAC mode is `heat`.
+The Atlantic climate must expose a `current_temperature` attribute, which is used as the reference temperature. Room climates must expose `current_temperature` and `temperature` attributes. The integration considers a valve active when its HVAC mode is `heat`.
 
 ## Initial control behavior
 
 - If at least one room climate is in `heat`, the Atlantic climate is set to `heat`.
 - The largest room temperature deficit (`target - current`) determines a temperature offset. The original piecewise modulation curve is retained and capped by `delta_max`.
-- The Atlantic target is `reference temperature + offset`, limited to 15–28 °C and rounded to 0.5 °C.
+- The Atlantic target is the Atlantic climate's current temperature plus the offset, limited to 15–28 °C and rounded to 0.5 °C.
 - If every room climate is available and none is in `heat`, the Atlantic climate is set to `off`.
 - If room climates are unavailable, the integration leaves the Atlantic mode unchanged rather than treating missing data as an explicit demand to turn off.
 

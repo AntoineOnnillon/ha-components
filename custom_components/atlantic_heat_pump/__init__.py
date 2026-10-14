@@ -17,7 +17,6 @@ from .const import (
     CONF_DEADBAND,
     CONF_DELTA_MAX,
     CONF_IDLE_OFFSET,
-    CONF_REFERENCE_SENSOR,
     CONF_ROOM_CLIMATES,
     CONF_TARGET_CLIMATE,
     DOMAIN,
@@ -63,7 +62,6 @@ class AtlanticHeatPumpController:
     def __init__(self, hass: HomeAssistant, config: dict[str, Any]) -> None:
         self.hass = hass
         self.target_climate: str = config[CONF_TARGET_CLIMATE]
-        self.reference_sensor: str = config[CONF_REFERENCE_SENSOR]
         self.room_climates: list[str] = config[CONF_ROOM_CLIMATES]
         self.deadband: float = float(config.get(CONF_DEADBAND, DEFAULT_DEADBAND))
         self.delta_max: float = float(config.get(CONF_DELTA_MAX, DEFAULT_DELTA_MAX))
@@ -73,9 +71,7 @@ class AtlanticHeatPumpController:
 
     async def async_start(self) -> None:
         """Watch the configured entities and apply the initial state."""
-        watched_entities = list(
-            dict.fromkeys([self.reference_sensor, *self.room_climates])
-        )
+        watched_entities = list(dict.fromkeys([self.target_climate, *self.room_climates]))
         self._unsubscribe = async_track_state_change_event(
             self.hass, watched_entities, self._handle_state_change
         )
@@ -119,14 +115,16 @@ class AtlanticHeatPumpController:
 
             await self._async_set_hvac_mode("heat")
 
-            reference_state = self.hass.states.get(self.reference_sensor)
-            reference_temperature = (
-                self._number(reference_state.state) if reference_state is not None else None
+            target_state = self.hass.states.get(self.target_climate)
+            reference_temperature = self._number(
+                target_state.attributes.get("current_temperature")
+                if target_state is not None
+                else None
             )
             if reference_temperature is None:
                 _LOGGER.warning(
-                    "Cannot calculate the Atlantic setpoint: %s has no valid temperature",
-                    self.reference_sensor,
+                    "Cannot calculate the Atlantic setpoint: %s has no valid current temperature",
+                    self.target_climate,
                 )
                 return
 
@@ -148,7 +146,6 @@ class AtlanticHeatPumpController:
             target_temperature = self._round_half_degree(
                 min(28.0, max(15.0, reference_temperature + delta))
             )
-            target_state = self.hass.states.get(self.target_climate)
             current_target = (
                 self._number(target_state.attributes.get("temperature"))
                 if target_state is not None
