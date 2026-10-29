@@ -1,0 +1,145 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Gestion PV du cumulus",
+        "description": "Sélectionnez les entités ESPHome et les prévisions PV. Home Assistant calcule la puissance de chauffe ; ESPHome conserve les coupures de sécurité et le thermostat de secours local.",
+        "data": {
+          "top_temperature": "Température haute du ballon",
+          "heater_command": "Nombre ESPHome de commande du chauffage",
+          "pv_priority_switch": "Commutateur ESPHome de pilotage Home Assistant",
+          "enable_switch": "Commutateur ESPHome d'activation",
+          "boost_switch": "Commutateur ESPHome de boost",
+          "pv_surplus": "Capteur de surplus PV net",
+          "grid_export": "Capteur de puissance injectée au réseau",
+          "grid_import": "Capteur de puissance soutirée au réseau",
+          "pv_forecast": "Prévision PV du jour (kWh)",
+          "pv_forecast_d1": "Prévision PV de demain (kWh)",
+          "pv_forecast_d2": "Prévision PV dans deux jours (kWh)",
+          "consumption_forecast": "Prévision de consommation restante (kWh)",
+          "peak_hour": "Heure prévue du pic PV",
+          "heater_power": "Capteur de puissance mesurée du cumulus",
+          "tank_volume_l": "Volume du ballon (L)",
+          "element_power_w": "Puissance de la résistance (W)",
+          "target_c": "Température de base (°C)",
+          "min_temp_c": "Température minimale du ballon (°C)",
+          "max_temp_c": "Température maximale du ballon (°C)",
+          "hysteresis_c": "Hystérésis de température (°C)",
+          "surplus_threshold_w": "Surplus PV minimal (W)",
+          "burst_hysteresis_wh": "Marge de réserve avant salve (Wh)",
+          "prefer_burst": "Préférer les salves PV à pleine puissance",
+          "grid_margin_w": "Marge minimale d'injection réseau (W)",
+          "planner_enabled": "Activer la planification multi-jours",
+          "wait_for_peak": "Attendre la fenêtre du pic PV",
+          "peak_start_h": "Heure de début de la fenêtre PV",
+          "peak_end_h": "Heure de fin de la fenêtre PV",
+          "peak_pad_before_h": "Heures avant le pic prévu",
+          "peak_pad_after_h": "Heures après le pic prévu",
+          "daily_consumption_kwh": "Besoin énergétique quotidien prévu (kWh)",
+          "horizon_days": "Horizon de planification (jours)",
+          "boost_offset_max_c": "Hausse maximale de température (°C)",
+          "deficit_offset_max_c": "Baisse maximale de température (°C)"
+        },
+        "data_description": {
+          "pv_priority_switch": "Active la consigne de puissance envoyée par Home Assistant dans le contrôleur ESPHome. Désactivez-le pour revenir au thermostat local.",
+          "pv_surplus": "Utilisé lorsqu'aucun capteur d'injection réseau valide n'est sélectionné.",
+          "grid_export": "Positif en cas d'injection. Prioritaire sur le capteur de surplus PV net s'il est sélectionné.",
+          "grid_import": "Positif en cas de soutirage ; soustrait à l'injection pour estimer le surplus net.",
+          "heater_command": "Sélectionnez le nombre ESPHome configuré comme cumulus.heater_command (0–100 %)."
+        }
+      }
+    },
+    "error": {
+      "no_surplus_source": "Sélectionnez un capteur de surplus PV ou d'injection réseau.",
+      "invalid_temperature_limits": "La température minimale doit être inférieure à la température maximale.",
+      "invalid_peak_window": "Les heures de début et de fin de la fenêtre PV doivent être différentes."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Gestion PV du cumulus",
+        "description": "Modifiez les entités ESPHome, les sources PV et les paramètres de planification énergétique.",
+        "data": {
+          "top_temperature": "Température haute du ballon",
+          "heater_command": "Nombre ESPHome de commande du chauffage",
+          "pv_priority_switch": "Commutateur ESPHome de pilotage Home Assistant",
+          "enable_switch": "Commutateur ESPHome d'activation",
+          "boost_switch": "Commutateur ESPHome de boost",
+          "pv_surplus": "Capteur de surplus PV net",
+          "grid_export": "Capteur de puissance injectée au réseau",
+          "grid_import": "Capteur de puissance soutirée au réseau",
+          "pv_forecast": "Prévision PV du jour (kWh)",
+          "pv_forecast_d1": "Prévision PV de demain (kWh)",
+          "pv_forecast_d2": "Prévision PV dans deux jours (kWh)",
+          "consumption_forecast": "Prévision de consommation restante (kWh)",
+          "peak_hour": "Heure prévue du pic PV",
+          "heater_power": "Capteur de puissance mesurée du cumulus",
+          "tank_volume_l": "Volume du ballon (L)",
+          "element_power_w": "Puissance de la résistance (W)",
+          "target_c": "Température de base (°C)",
+          "min_temp_c": "Température minimale du ballon (°C)",
+          "max_temp_c": "Température maximale du ballon (°C)",
+          "hysteresis_c": "Hystérésis de température (°C)",
+          "surplus_threshold_w": "Surplus PV minimal (W)",
+          "burst_hysteresis_wh": "Marge de réserve avant salve (Wh)",
+          "prefer_burst": "Préférer les salves PV à pleine puissance",
+          "grid_margin_w": "Marge minimale d'injection réseau (W)",
+          "planner_enabled": "Activer la planification multi-jours",
+          "wait_for_peak": "Attendre la fenêtre du pic PV",
+          "peak_start_h": "Heure de début de la fenêtre PV",
+          "peak_end_h": "Heure de fin de la fenêtre PV",
+          "peak_pad_before_h": "Heures avant le pic prévu",
+          "peak_pad_after_h": "Heures après le pic prévu",
+          "daily_consumption_kwh": "Besoin énergétique quotidien prévu (kWh)",
+          "horizon_days": "Horizon de planification (jours)",
+          "boost_offset_max_c": "Hausse maximale de température (°C)",
+          "deficit_offset_max_c": "Baisse maximale de température (°C)"
+        },
+        "data_description": {
+          "pv_priority_switch": "Active la consigne de puissance envoyée par Home Assistant dans le contrôleur ESPHome. Désactivez-le pour revenir au thermostat local.",
+          "pv_surplus": "Utilisé lorsqu'aucun capteur d'injection réseau valide n'est sélectionné.",
+          "grid_export": "Positif en cas d'injection. Prioritaire sur le capteur de surplus PV net s'il est sélectionné.",
+          "grid_import": "Positif en cas de soutirage ; soustrait à l'injection pour estimer le surplus net.",
+          "heater_command": "Sélectionnez le nombre ESPHome configuré comme cumulus.heater_command (0–100 %)."
+        }
+      }
+    },
+    "error": {
+      "no_surplus_source": "Sélectionnez un capteur de surplus PV ou d'injection réseau.",
+      "invalid_temperature_limits": "La température minimale doit être inférieure à la température maximale.",
+      "invalid_peak_window": "Les heures de début et de fin de la fenêtre PV doivent être différentes."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "mode": {
+        "name": "Mode de gestion"
+      },
+      "requested_duty": {
+        "name": "Puissance de chauffe demandée"
+      },
+      "pv_surplus": {
+        "name": "Surplus PV net"
+      },
+      "pv_budget": {
+        "name": "Réserve d'énergie PV"
+      },
+      "pv_surplus_used_today": {
+        "name": "Surplus PV utilisé aujourd'hui"
+      },
+      "effective_target": {
+        "name": "Cible effective du ballon"
+      },
+      "horizon_available": {
+        "name": "Énergie disponible sur l'horizon"
+      },
+      "energy_deficit_forecast": {
+        "name": "Déficit énergétique prévu"
+      },
+      "peak_window_active": {
+        "name": "Fenêtre de pic PV active"
+      }
+    }
+  }
+}

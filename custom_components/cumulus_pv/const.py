@@ -1,0 +1,64 @@
+"""Constants for the Cumulus PV controller."""
+
+DOMAIN = "cumulus_pv"
+
+CONF_TOP_TEMPERATURE = "top_temperature"
+CONF_HEATER_COMMAND = "heater_command"
+CONF_PV_PRIORITY_SWITCH = "pv_priority_switch"
+CONF_ENABLE_SWITCH = "enable_switch"
+CONF_BOOST_SWITCH = "boost_switch"
+CONF_PV_SURPLUS = "pv_surplus"
+CONF_GRID_EXPORT = "grid_export"
+CONF_GRID_IMPORT = "grid_import"
+CONF_PV_FORECAST = "pv_forecast"
+CONF_PV_FORECAST_D1 = "pv_forecast_d1"
+CONF_PV_FORECAST_D2 = "pv_forecast_d2"
+CONF_CONSUMPTION_FORECAST = "consumption_forecast"
+CONF_PEAK_HOUR = "peak_hour"
+CONF_HEATER_POWER = "heater_power"
+
+CONF_TANK_VOLUME_L = "tank_volume_l"
+CONF_ELEMENT_POWER_W = "element_power_w"
+CONF_TARGET_C = "target_c"
+CONF_MIN_TEMP_C = "min_temp_c"
+CONF_MAX_TEMP_C = "max_temp_c"
+CONF_HYSTERESIS_C = "hysteresis_c"
+CONF_SURPLUS_THRESHOLD_W = "surplus_threshold_w"
+CONF_BURST_HYSTERESIS_WH = "burst_hysteresis_wh"
+CONF_PREFER_BURST = "prefer_burst"
+CONF_GRID_MARGIN_W = "grid_margin_w"
+CONF_PLANNER_ENABLED = "planner_enabled"
+CONF_WAIT_FOR_PEAK = "wait_for_peak"
+CONF_PEAK_START_H = "peak_start_h"
+CONF_PEAK_END_H = "peak_end_h"
+CONF_PEAK_PAD_BEFORE_H = "peak_pad_before_h"
+CONF_PEAK_PAD_AFTER_H = "peak_pad_after_h"
+CONF_DAILY_CONSUMPTION_KWH = "daily_consumption_kwh"
+CONF_HORIZON_DAYS = "horizon_days"
+CONF_BOOST_OFFSET_MAX_C = "boost_offset_max_c"
+CONF_DEFICIT_OFFSET_MAX_C = "deficit_offset_max_c"
+
+DEFAULT_TANK_VOLUME_L = 200.0
+DEFAULT_ELEMENT_POWER_W = 2400.0
+DEFAULT_TARGET_C = 55.0
+DEFAULT_MIN_TEMP_C = 40.0
+DEFAULT_MAX_TEMP_C = 65.0
+DEFAULT_HYSTERESIS_C = 4.0
+DEFAULT_SURPLUS_THRESHOLD_W = 100.0
+DEFAULT_BURST_HYSTERESIS_WH = 100.0
+DEFAULT_PREFER_BURST = True
+DEFAULT_GRID_MARGIN_W = 50.0
+DEFAULT_PLANNER_ENABLED = True
+DEFAULT_WAIT_FOR_PEAK = True
+DEFAULT_PEAK_START_H = 10
+DEFAULT_PEAK_END_H = 16
+DEFAULT_PEAK_PAD_BEFORE_H = 1
+DEFAULT_PEAK_PAD_AFTER_H = 2
+DEFAULT_DAILY_CONSUMPTION_KWH = 8.0
+DEFAULT_HORIZON_DAYS = 2
+DEFAULT_BOOST_OFFSET_MAX_C = 8.0
+DEFAULT_DEFICIT_OFFSET_MAX_C = 5.0
+
+UPDATE_INTERVAL_SECONDS = 15
+STATE_SAVE_INTERVAL_SECONDS = 300
+WATER_CP_J_PER_KG_K = 4185.0

@@ -1,0 +1,145 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Cumulus PV controller",
+        "description": "Select the ESPHome entities and PV forecast sensors. Home Assistant calculates the heater command; ESPHome keeps the local safety cutoffs and thermostat fallback.",
+        "data": {
+          "top_temperature": "Tank top temperature",
+          "heater_command": "ESPHome heater command number",
+          "pv_priority_switch": "ESPHome Home Assistant control switch",
+          "enable_switch": "ESPHome enable switch",
+          "boost_switch": "ESPHome boost switch",
+          "pv_surplus": "Net PV surplus sensor",
+          "grid_export": "Grid export power sensor",
+          "grid_import": "Grid import power sensor",
+          "pv_forecast": "PV forecast for today (kWh)",
+          "pv_forecast_d1": "PV forecast for tomorrow (kWh)",
+          "pv_forecast_d2": "PV forecast in two days (kWh)",
+          "consumption_forecast": "Remaining home consumption forecast (kWh)",
+          "peak_hour": "Expected PV peak hour",
+          "heater_power": "Measured heater power sensor",
+          "tank_volume_l": "Tank volume (L)",
+          "element_power_w": "Heater element power (W)",
+          "target_c": "Base target temperature (°C)",
+          "min_temp_c": "Minimum tank temperature (°C)",
+          "max_temp_c": "Maximum tank temperature (°C)",
+          "hysteresis_c": "Temperature hysteresis (°C)",
+          "surplus_threshold_w": "Minimum PV surplus (W)",
+          "burst_hysteresis_wh": "Burst reserve margin (Wh)",
+          "prefer_burst": "Prefer full-power PV bursts",
+          "grid_margin_w": "Minimum grid export margin (W)",
+          "planner_enabled": "Enable multi-day planner",
+          "wait_for_peak": "Wait for the PV peak window",
+          "peak_start_h": "PV window start hour",
+          "peak_end_h": "PV window end hour",
+          "peak_pad_before_h": "Hours before expected peak",
+          "peak_pad_after_h": "Hours after expected peak",
+          "daily_consumption_kwh": "Expected daily energy need (kWh)",
+          "horizon_days": "Planning horizon (days)",
+          "boost_offset_max_c": "Maximum temperature boost (°C)",
+          "deficit_offset_max_c": "Maximum temperature reduction (°C)"
+        },
+        "data_description": {
+          "pv_priority_switch": "This switch enables the Home Assistant duty command in the ESPHome controller. Turn it off to return to the local thermostat.",
+          "pv_surplus": "Used when no valid grid export sensor is selected.",
+          "grid_export": "Positive when exporting power. If selected, this takes priority over the net PV surplus sensor.",
+          "grid_import": "Positive when importing power; subtracted from grid export to estimate net surplus.",
+          "heater_command": "Use the ESPHome number entity configured as cumulus.heater_command (0–100%)."
+        }
+      }
+    },
+    "error": {
+      "no_surplus_source": "Select a PV surplus sensor or a grid export sensor.",
+      "invalid_temperature_limits": "The minimum temperature must be below the maximum.",
+      "invalid_peak_window": "The PV window start and end hours must differ."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Cumulus PV controller",
+        "description": "Update the ESPHome entities, PV sources, and energy-planning settings.",
+        "data": {
+          "top_temperature": "Tank top temperature",
+          "heater_command": "ESPHome heater command number",
+          "pv_priority_switch": "ESPHome Home Assistant control switch",
+          "enable_switch": "ESPHome enable switch",
+          "boost_switch": "ESPHome boost switch",
+          "pv_surplus": "Net PV surplus sensor",
+          "grid_export": "Grid export power sensor",
+          "grid_import": "Grid import power sensor",
+          "pv_forecast": "PV forecast for today (kWh)",
+          "pv_forecast_d1": "PV forecast for tomorrow (kWh)",
+          "pv_forecast_d2": "PV forecast in two days (kWh)",
+          "consumption_forecast": "Remaining home consumption forecast (kWh)",
+          "peak_hour": "Expected PV peak hour",
+          "heater_power": "Measured heater power sensor",
+          "tank_volume_l": "Tank volume (L)",
+          "element_power_w": "Heater element power (W)",
+          "target_c": "Base target temperature (°C)",
+          "min_temp_c": "Minimum tank temperature (°C)",
+          "max_temp_c": "Maximum tank temperature (°C)",
+          "hysteresis_c": "Temperature hysteresis (°C)",
+          "surplus_threshold_w": "Minimum PV surplus (W)",
+          "burst_hysteresis_wh": "Burst reserve margin (Wh)",
+          "prefer_burst": "Prefer full-power PV bursts",
+          "grid_margin_w": "Minimum grid export margin (W)",
+          "planner_enabled": "Enable multi-day planner",
+          "wait_for_peak": "Wait for the PV peak window",
+          "peak_start_h": "PV window start hour",
+          "peak_end_h": "PV window end hour",
+          "peak_pad_before_h": "Hours before expected peak",
+          "peak_pad_after_h": "Hours after expected peak",
+          "daily_consumption_kwh": "Expected daily energy need (kWh)",
+          "horizon_days": "Planning horizon (days)",
+          "boost_offset_max_c": "Maximum temperature boost (°C)",
+          "deficit_offset_max_c": "Maximum temperature reduction (°C)"
+        },
+        "data_description": {
+          "pv_priority_switch": "This switch enables the Home Assistant duty command in the ESPHome controller. Turn it off to return to the local thermostat.",
+          "pv_surplus": "Used when no valid grid export sensor is selected.",
+          "grid_export": "Positive when exporting power. If selected, this takes priority over the net PV surplus sensor.",
+          "grid_import": "Positive when importing power; subtracted from grid export to estimate net surplus.",
+          "heater_command": "Use the ESPHome number entity configured as cumulus.heater_command (0–100%)."
+        }
+      }
+    },
+    "error": {
+      "no_surplus_source": "Select a PV surplus sensor or a grid export sensor.",
+      "invalid_temperature_limits": "The minimum temperature must be below the maximum.",
+      "invalid_peak_window": "The PV window start and end hours must differ."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "mode": {
+        "name": "Control mode"
+      },
+      "requested_duty": {
+        "name": "Requested heater level"
+      },
+      "pv_surplus": {
+        "name": "Net PV surplus"
+      },
+      "pv_budget": {
+        "name": "PV energy reserve"
+      },
+      "pv_surplus_used_today": {
+        "name": "PV surplus used today"
+      },
+      "effective_target": {
+        "name": "Effective tank target"
+      },
+      "horizon_available": {
+        "name": "Energy available in horizon"
+      },
+      "energy_deficit_forecast": {
+        "name": "Forecast energy deficit"
+      },
+      "peak_window_active": {
+        "name": "PV peak window active"
+      }
+    }
+  }
+}
