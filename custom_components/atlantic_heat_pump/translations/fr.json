@@ -14,6 +14,16 @@
           "deadband": "Les écarts dans cette plage ne produisent aucune correction. Au-delà, le plus grand déficit augmente la cible ; si toutes les pièces en chauffage dépassent leur consigne, le plus petit dépassement la diminue. Valeur par défaut : 0,2 °C.",
           "delta_max": "Correction absolue maximale par rapport à la température actuelle du climat Atlantic. Valeur par défaut : 6 °C."
         }
+      },
+      "room_weight": {
+        "title": "Influence de la pièce",
+        "description": "Définissez l'influence de {room_name} sur la consigne Atlantic.",
+        "data": {
+          "room_weight": "Poids d'influence (%)"
+        },
+        "data_description": {
+          "room_weight": "100 % applique tout l'écart de température de la pièce. Une valeur plus faible réduit son influence ; 0 % l'ignore."
+        }
       }
     },
     "error": {
@@ -35,6 +45,16 @@
         "data_description": {
           "deadband": "Les écarts dans cette plage ne produisent aucune correction. Au-delà, le plus grand déficit augmente la cible ; si toutes les pièces en chauffage dépassent leur consigne, le plus petit dépassement la diminue. Valeur par défaut : 0,2 °C.",
           "delta_max": "Correction absolue maximale par rapport à la température actuelle du climat Atlantic. Valeur par défaut : 6 °C."
+        }
+      },
+      "room_weight": {
+        "title": "Influence de la pièce",
+        "description": "Définissez l'influence de {room_name} sur la consigne Atlantic.",
+        "data": {
+          "room_weight": "Poids d'influence (%)"
+        },
+        "data_description": {
+          "room_weight": "100 % applique tout l'écart de température de la pièce. Une valeur plus faible réduit son influence ; 0 % l'ignore."
         }
       }
     },

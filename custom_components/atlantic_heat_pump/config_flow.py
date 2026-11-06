@@ -22,9 +22,12 @@ from .const import (
     CONF_DEADBAND,
     CONF_DELTA_MAX,
     CONF_ROOM_CLIMATES,
+    CONF_ROOM_WEIGHT,
+    CONF_ROOM_WEIGHTS,
     CONF_TARGET_CLIMATE,
     DEFAULT_DEADBAND,
     DEFAULT_DELTA_MAX,
+    DEFAULT_ROOM_WEIGHT,
     DOMAIN,
 )
 
@@ -82,6 +85,28 @@ def _validate_input(user_input: dict[str, Any]) -> str | None:
     return None
 
 
+def _room_weight_schema(default: float = DEFAULT_ROOM_WEIGHT) -> vol.Schema:
+    return vol.Schema(
+        {
+            vol.Required(CONF_ROOM_WEIGHT, default=default): NumberSelector(
+                NumberSelectorConfig(
+                    min=0,
+                    max=100,
+                    step=5,
+                    mode=NumberSelectorMode.SLIDER,
+                )
+            )
+        }
+    )
+
+
+def _room_name(hass, entity_id: str) -> str:
+    state = hass.states.get(entity_id)
+    if state is None:
+        return entity_id
+    return state.attributes.get("friendly_name", entity_id)
+
+
 class AtlanticHeatPumpConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Set up an Atlantic heat-pump controller."""
 
@@ -98,15 +123,39 @@ class AtlanticHeatPumpConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             else:
                 await self.async_set_unique_id(user_input[CONF_TARGET_CLIMATE])
                 self._abort_if_unique_id_configured()
-                return self.async_create_entry(
-                    title=user_input[CONF_TARGET_CLIMATE],
-                    data=user_input,
-                )
+                self._pending_data = user_input
+                self._pending_room_weights = {}
+                self._room_weight_index = 0
+                return await self.async_step_room_weight()
 
         return self.async_show_form(
             step_id="user",
             data_schema=_data_schema(user_input),
             errors=errors,
+        )
+
+    async def async_step_room_weight(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        if user_input is not None:
+            entity_id = self._pending_data[CONF_ROOM_CLIMATES][self._room_weight_index]
+            self._pending_room_weights[entity_id] = user_input[CONF_ROOM_WEIGHT]
+            self._room_weight_index += 1
+
+        if self._room_weight_index >= len(self._pending_data[CONF_ROOM_CLIMATES]):
+            return self.async_create_entry(
+                title=self._pending_data[CONF_TARGET_CLIMATE],
+                data={
+                    **self._pending_data,
+                    CONF_ROOM_WEIGHTS: self._pending_room_weights,
+                },
+            )
+
+        entity_id = self._pending_data[CONF_ROOM_CLIMATES][self._room_weight_index]
+        return self.async_show_form(
+            step_id="room_weight",
+            data_schema=_room_weight_schema(),
+            description_placeholders={"room_name": _room_name(self.hass, entity_id)},
         )
 
     @staticmethod
@@ -129,10 +178,39 @@ class AtlanticHeatPumpOptionsFlow(config_entries.OptionsFlow):
             if error is not None:
                 errors["base"] = error
             else:
-                return self.async_create_entry(title="", data=user_input)
+                self._pending_data = user_input
+                self._pending_room_weights = {}
+                self._room_weight_index = 0
+                self._existing_room_weights = defaults.get(CONF_ROOM_WEIGHTS, {})
+                return await self.async_step_room_weight()
 
         return self.async_show_form(
             step_id="init",
             data_schema=_data_schema(defaults),
             errors=errors,
+        )
+
+    async def async_step_room_weight(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
+        if user_input is not None:
+            entity_id = self._pending_data[CONF_ROOM_CLIMATES][self._room_weight_index]
+            self._pending_room_weights[entity_id] = user_input[CONF_ROOM_WEIGHT]
+            self._room_weight_index += 1
+
+        if self._room_weight_index >= len(self._pending_data[CONF_ROOM_CLIMATES]):
+            return self.async_create_entry(
+                title="",
+                data={
+                    **self._pending_data,
+                    CONF_ROOM_WEIGHTS: self._pending_room_weights,
+                },
+            )
+
+        entity_id = self._pending_data[CONF_ROOM_CLIMATES][self._room_weight_index]
+        default = self._existing_room_weights.get(entity_id, DEFAULT_ROOM_WEIGHT)
+        return self.async_show_form(
+            step_id="room_weight",
+            data_schema=_room_weight_schema(default),
+            description_placeholders={"room_name": _room_name(self.hass, entity_id)},
         )

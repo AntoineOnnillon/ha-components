@@ -14,6 +14,16 @@
           "deadband": "Temperature differences within this range produce no offset. Above it, the largest room deficit raises the target; if all heating rooms are above their setpoints, the smallest overshoot lowers it. Default: 0.2 °C.",
           "delta_max": "Maximum absolute offset from the Atlantic climate's current temperature. Default: 6 °C."
         }
+      },
+      "room_weight": {
+        "title": "Room influence",
+        "description": "Set how strongly {room_name} influences the Atlantic setpoint.",
+        "data": {
+          "room_weight": "Room influence (%)"
+        },
+        "data_description": {
+          "room_weight": "100% applies the full room temperature difference. Lower values reduce this room's influence; 0% ignores it."
+        }
       }
     },
     "error": {
@@ -35,6 +45,16 @@
         "data_description": {
           "deadband": "Temperature differences within this range produce no offset. Above it, the largest room deficit raises the target; if all heating rooms are above their setpoints, the smallest overshoot lowers it. Default: 0.2 °C.",
           "delta_max": "Maximum absolute offset from the Atlantic climate's current temperature. Default: 6 °C."
+        }
+      },
+      "room_weight": {
+        "title": "Room influence",
+        "description": "Set how strongly {room_name} influences the Atlantic setpoint.",
+        "data": {
+          "room_weight": "Room influence (%)"
+        },
+        "data_description": {
+          "room_weight": "100% applies the full room temperature difference. Lower values reduce this room's influence; 0% ignores it."
         }
       }
     },

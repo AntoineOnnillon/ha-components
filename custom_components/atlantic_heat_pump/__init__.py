@@ -19,10 +19,12 @@ from .const import (
     CONF_DEADBAND,
     CONF_DELTA_MAX,
     CONF_ROOM_CLIMATES,
+    CONF_ROOM_WEIGHTS,
     CONF_TARGET_CLIMATE,
     DOMAIN,
     DEFAULT_DEADBAND,
     DEFAULT_DELTA_MAX,
+    DEFAULT_ROOM_WEIGHT,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -75,6 +77,12 @@ class AtlanticHeatPumpController:
         self.entry_id = entry_id
         self.target_climate: str = config[CONF_TARGET_CLIMATE]
         self.room_climates: list[str] = config[CONF_ROOM_CLIMATES]
+        self.room_weights: dict[str, float] = {
+            entity_id: self._configured_room_weight(
+                config.get(CONF_ROOM_WEIGHTS, {}).get(entity_id)
+            )
+            for entity_id in self.room_climates
+        }
         self.deadband: float = float(config.get(CONF_DEADBAND, DEFAULT_DEADBAND))
         self.delta_max: float = float(config.get(CONF_DELTA_MAX, DEFAULT_DELTA_MAX))
         self._lock = asyncio.Lock()
@@ -165,7 +173,8 @@ class AtlanticHeatPumpController:
                 current = self._number(room.attributes.get("current_temperature"))
                 target = self._number(room.attributes.get("temperature"))
                 if current is not None and target is not None:
-                    deficits.append(target - current)
+                    weight = self.room_weights.get(room.entity_id, DEFAULT_ROOM_WEIGHT)
+                    deficits.append((target - current) * weight / 100.0)
 
             if not deficits:
                 _LOGGER.warning(
@@ -239,6 +248,13 @@ class AtlanticHeatPumpController:
         else:
             delta = 4.0 + (deficit - 3.0)
         return min(delta, self.delta_max)
+
+    @classmethod
+    def _configured_room_weight(cls, value: Any) -> float:
+        weight = cls._number(value)
+        if weight is None:
+            return DEFAULT_ROOM_WEIGHT
+        return min(100.0, max(0.0, weight))
 
     @staticmethod
     def _number(value: Any) -> float | None:
