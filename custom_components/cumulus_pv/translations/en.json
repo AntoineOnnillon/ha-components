@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Cumulus PV controller",
-        "description": "Select the ESPHome entities and PV forecast sensors. Home Assistant calculates heater output while ESPHome retains local safety and thermostat fallback.",
+        "description": "Select the ESPHome entities and up to seven daily PV production forecasts. The planner compares forecast production with estimated household use and water-heater energy, then stores heat ahead of forecast shortages. It keeps the base target when forecasts are sufficient, and only raises it for a shortage that is economically worthwhile after estimated tank losses.",
         "data": {
           "top_temperature": "Tank top temperature",
           "heater_command": "ESPHome heater command number",
@@ -13,10 +13,16 @@
           "pv_surplus": "Net PV surplus sensor",
           "grid_export": "Grid export power sensor",
           "grid_import": "Grid import power sensor",
-          "pv_forecast": "PV forecast for today (kWh)",
+          "pv_forecast": "PV forecast remaining today (kWh)",
           "pv_forecast_d1": "PV forecast for tomorrow (kWh)",
           "pv_forecast_d2": "PV forecast in two days (kWh)",
-          "consumption_forecast": "Remaining home consumption forecast (kWh)",
+          "pv_forecast_d3": "PV forecast in three days (kWh)",
+          "pv_forecast_d4": "PV forecast in four days (kWh)",
+          "pv_forecast_d5": "PV forecast in five days (kWh)",
+          "pv_forecast_d6": "PV forecast in six days (kWh)",
+          "consumption_forecast": "Remaining household consumption forecast excluding water heater (kWh)",
+          "house_energy": "Total home energy meter (including water heater)",
+          "heater_energy": "Cumulative water heater energy meter (optional)",
           "peak_hour": "Expected PV peak hour",
           "heater_power": "Measured heater power sensor",
           "tank_volume_l": "Tank volume (L)",
@@ -35,16 +41,38 @@
           "peak_end_h": "PV window end hour",
           "peak_pad_before_h": "Hours before expected peak",
           "peak_pad_after_h": "Hours after expected peak",
-          "daily_consumption_kwh": "Expected daily energy need (kWh)",
+          "daily_consumption_kwh": "Fallback daily water heater energy (kWh)",
+          "daily_house_consumption_kwh": "Fallback daily home energy excluding water heater (kWh)",
           "horizon_days": "Planning horizon (days)",
-          "boost_offset_max_c": "Maximum temperature boost (°C)",
-          "deficit_offset_max_c": "Maximum temperature reduction (°C)"
+          "boost_offset_max_c": "Maximum temperature boost for forecast shortage (°C)",
+          "forecast_margin_pct": "PV forecast safety margin (%)",
+          "tank_loss_pct_per_day": "Estimated tank heat loss per day (%)",
+          "recovery_value_pct": "Value of avoided future energy cost (% of base price)",
+          "export_value_pct": "Value of exported energy (% of base price)"
+        },
+        "data_description": {
+          "pv_priority_switch": "This switch enables the Home Assistant duty command in the ESPHome controller. Turn it off to return to the local thermostat.",
+          "pv_surplus": "Used when no valid grid export sensor is selected.",
+          "grid_export": "Positive when exporting power. If selected, this takes priority over the net PV surplus sensor.",
+          "grid_import": "Positive when importing power; subtracted from grid export to estimate net surplus.",
+          "consumption_forecast": "Use a forecast of remaining household consumption excluding the water heater.",
+          "pv_forecast": "Select a sensor for the remaining PV production today, in kWh.",
+          "pv_forecast_d1": "Select a sensor for the PV production forecast tomorrow, in kWh.",
+          "heater_command": "Use the ESPHome number entity configured as cumulus.heater_command (0–100%).",
+          "house_energy": "Optional cumulative whole-home energy meter, including the water heater. Supports Wh, kWh, or MWh; daily use is learned from meter changes.",
+          "heater_energy": "Optional cumulative water-heater energy meter. Supports Wh, kWh, or MWh; daily use is learned from complete days.",
+          "daily_consumption_kwh": "Fallback used until a complete daily consumption history is available. If no energy meter is selected, consumption is estimated from measured heater power or configured element power and HA duty.",
+          "daily_house_consumption_kwh": "Used until the home and water-heater meters have enough history. When both are configured, their measured difference is used instead.",
+          "forecast_margin_pct": "Reduces forecast PV production to account for forecast uncertainty.",
+          "tank_loss_pct_per_day": "Approximate fraction of stored heat lost each day; tune to the tank's real insulation and installation.",
+          "recovery_value_pct": "Set to 50% when each kWh avoided from the grid saves only the transport charge, which is half the base price.",
+          "export_value_pct": "Set this to the effective value of exporting one kWh instead of keeping it as heat. Forecast preheating is skipped when export value exceeds avoided cost after tank losses."
         }
       }
     },
     "error": {
       "no_surplus_source": "Select a PV surplus sensor or a grid export sensor.",
-      "invalid_temperature_limits": "The minimum temperature must be below the maximum.",
+      "invalid_temperature_limits": "The base target must be above the minimum and at or below the maximum temperature.",
       "invalid_peak_window": "The PV window start and end hours must differ."
     }
   },
@@ -52,7 +80,7 @@
     "step": {
       "init": {
         "title": "Cumulus PV controller",
-        "description": "Update the ESPHome entities, PV sources, and energy-planning settings.",
+        "description": "Update the ESPHome entities, PV sources, and energy-planning settings. The planner leaves the base target unchanged when PV forecasts are sufficient and stores only the thermal reserve justified by forecast shortages, uncertainty, tank losses, and energy value.",
         "data": {
           "top_temperature": "Tank top temperature",
           "heater_command": "ESPHome heater command number",
@@ -62,10 +90,16 @@
           "pv_surplus": "Net PV surplus sensor",
           "grid_export": "Grid export power sensor",
           "grid_import": "Grid import power sensor",
-          "pv_forecast": "PV forecast for today (kWh)",
+          "pv_forecast": "PV forecast remaining today (kWh)",
           "pv_forecast_d1": "PV forecast for tomorrow (kWh)",
           "pv_forecast_d2": "PV forecast in two days (kWh)",
-          "consumption_forecast": "Remaining home consumption forecast (kWh)",
+          "pv_forecast_d3": "PV forecast in three days (kWh)",
+          "pv_forecast_d4": "PV forecast in four days (kWh)",
+          "pv_forecast_d5": "PV forecast in five days (kWh)",
+          "pv_forecast_d6": "PV forecast in six days (kWh)",
+          "consumption_forecast": "Remaining household consumption forecast excluding water heater (kWh)",
+          "house_energy": "Total home energy meter (including water heater)",
+          "heater_energy": "Cumulative water heater energy meter (optional)",
           "peak_hour": "Expected PV peak hour",
           "heater_power": "Measured heater power sensor",
           "tank_volume_l": "Tank volume (L)",
@@ -84,25 +118,51 @@
           "peak_end_h": "PV window end hour",
           "peak_pad_before_h": "Hours before expected peak",
           "peak_pad_after_h": "Hours after expected peak",
-          "daily_consumption_kwh": "Expected daily energy need (kWh)",
+          "daily_consumption_kwh": "Fallback daily water heater energy (kWh)",
+          "daily_house_consumption_kwh": "Fallback daily home energy excluding water heater (kWh)",
           "horizon_days": "Planning horizon (days)",
-          "boost_offset_max_c": "Maximum temperature boost (°C)",
-          "deficit_offset_max_c": "Maximum temperature reduction (°C)"
+          "boost_offset_max_c": "Maximum temperature boost for forecast shortage (°C)",
+          "forecast_margin_pct": "PV forecast safety margin (%)",
+          "tank_loss_pct_per_day": "Estimated tank heat loss per day (%)",
+          "recovery_value_pct": "Value of avoided future energy cost (% of base price)",
+          "export_value_pct": "Value of exported energy (% of base price)"
+        },
+        "data_description": {
+          "pv_priority_switch": "This switch enables the Home Assistant duty command in the ESPHome controller. Turn it off to return to the local thermostat.",
+          "pv_surplus": "Used when no valid grid export sensor is selected.",
+          "grid_export": "Positive when exporting power. If selected, this takes priority over the net PV surplus sensor.",
+          "grid_import": "Positive when importing power; subtracted from grid export to estimate net surplus.",
+          "consumption_forecast": "Use a forecast of remaining household consumption excluding the water heater.",
+          "pv_forecast": "Select a sensor for the remaining PV production today, in kWh.",
+          "pv_forecast_d1": "Select a sensor for the PV production forecast tomorrow, in kWh.",
+          "heater_command": "Use the ESPHome number entity configured as cumulus.heater_command (0–100%).",
+          "house_energy": "Optional cumulative whole-home energy meter, including the water heater. Supports Wh, kWh, or MWh; daily use is learned from meter changes.",
+          "heater_energy": "Optional cumulative water-heater energy meter. Supports Wh, kWh, or MWh; daily use is learned from complete days.",
+          "daily_consumption_kwh": "Fallback used until a complete daily consumption history is available. If no energy meter is selected, consumption is estimated from measured heater power or configured element power and HA duty.",
+          "daily_house_consumption_kwh": "Used until the home and water-heater meters have enough history. When both are configured, their measured difference is used instead.",
+          "forecast_margin_pct": "Reduces forecast PV production to account for forecast uncertainty.",
+          "tank_loss_pct_per_day": "Approximate fraction of stored heat lost each day; tune to the tank's real insulation and installation.",
+          "recovery_value_pct": "Set to 50% when each kWh avoided from the grid saves only the transport charge, which is half the base price.",
+          "export_value_pct": "Set this to the effective value of exporting one kWh instead of keeping it as heat. Forecast preheating is skipped when export value exceeds avoided cost after tank losses."
         }
       }
-    },
-    "entity": {
-      "sensor": {
-        "mode": {"name": "Control mode"},
-        "requested_duty": {"name": "Requested heater level"},
-        "pv_surplus": {"name": "Net PV surplus"},
-        "pv_budget": {"name": "PV energy reserve"},
-        "pv_surplus_used_today": {"name": "PV surplus used today"},
-        "effective_target": {"name": "Effective tank target"},
-        "horizon_available": {"name": "Energy available in horizon"},
-        "energy_deficit_forecast": {"name": "Forecast energy deficit"},
-        "peak_window_active": {"name": "PV peak window active"}
-      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "mode": {"name": "Control mode"},
+      "requested_duty": {"name": "Requested heater level"},
+      "pv_surplus": {"name": "Net PV surplus"},
+      "pv_budget": {"name": "PV energy reserve"},
+      "pv_surplus_used_today": {"name": "PV surplus used today"},
+      "effective_target": {"name": "Effective tank target"},
+      "thermal_charge_percent": {"name": "Estimated thermal charge"},
+      "horizon_available": {"name": "Energy available in horizon"},
+      "energy_deficit_forecast": {"name": "Forecast energy deficit"},
+      "daily_heater_consumption_forecast": {
+        "name": "Daily water heater consumption forecast"
+      },
+      "peak_window_active": {"name": "PV peak window active"}
     }
   }
 }

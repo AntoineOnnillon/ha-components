@@ -83,11 +83,12 @@ switch:
       name: "Water heater HA PV control"
 ```
 
-In the integration setup, select those entities and at least one current PV
-surplus or grid-export sensor. Grid import, PV forecasts, remaining household
-consumption, peak hour and measured heater power are optional. Forecast values
-are expected in kWh; power sensors are expected in W, with export/import
-positive in their named direction.
+Select the daily PV forecast sensors provided by your preferred forecast
+integration; the forecast values are expected in kWh. At least one current PV
+surplus or grid-export sensor is also required. Grid import, remaining
+household consumption, peak hour and measured heater power are optional. Power
+sensors are expected in W, with export/import positive in their named
+direction.
 
 When migrating an existing ESPHome configuration, remove the former PV input
 sensors and planner settings from the `cumulus:` block. Configure those source
@@ -106,7 +107,44 @@ falls back to its local thermostat after the configured `external_duty_timeout`
 to the local thermostat; unloading the HA integration also turns that switch
 off.
 
-PV burst/modulation, the energy reserve, forecast-based target adjustment and
-peak-window scheduling are calculated in Home Assistant. Those settings are
-available in the integration options. The HA maximum tank temperature should
-not exceed the `max_temperature` configured in ESPHome.
+PV burst/modulation, the energy reserve and peak-window scheduling are
+calculated in Home Assistant. The planner accepts daily PV production forecasts
+for today through six days ahead and uses a configurable horizon of up to seven
+days. Daily water-heater consumption is learned automatically from complete
+days, prioritizing the cumulative heater energy meter when configured. Without
+that meter, the integration sums measured heater power over time; if that is
+unavailable, it estimates use from the configured element power while a manual
+boost or HA PV control is active. Until a complete day of measurements is
+available, the configured daily-consumption value is used as a fallback. The
+`Daily water heater consumption forecast` diagnostic shows the value used by
+the planner. The planner reduces PV production forecasts by a configurable
+safety margin, then compares each day with estimated household use and
+hot-water energy. It only raises the target when the forecast shows a future deficit that
+can be usefully covered by stored heat; forecast surpluses before a deficit are
+accounted for, as are estimated daily tank losses. Adequate forecasts leave the
+base target unchanged, avoiding needless overheating and standing losses.
+
+Extra heat is requested only while actual PV surplus is available. If PV is
+insufficient after the production window, grid catch-up remains limited to the
+normal base target. The optional economic gate compares the configured value
+of avoided future energy with the value of exported energy after estimated
+tank losses. Defaults reflect a 50% transport charge avoided on recovered
+energy and no separate export payment; adjust both percentages to match the
+actual contract. The default forecast margin is 15%, and estimated tank loss
+is 5% per day; these are tunable assumptions, not measured properties.
+
+The diagnostic **Estimated thermal charge** uses the top temperature as a
+proxy: 0% corresponds to the configured minimum temperature, 100% to the base
+target, and 150% to the maximum planned boost temperature (bounded by the HA
+maximum). It is an estimate, not a literal volume/energy measurement, because
+a single top sensor cannot measure tank stratification.
+
+The optional whole-home energy meter must include the water heater; the optional
+water-heater meter is used to separate its daily consumption from the household
+load. With both cumulative energy meters configured (Wh, kWh or MWh), Home
+Assistant learns rolling daily averages from their changes, retaining up to
+seven completed days. Until enough history is available, the configurable daily
+home and water-heater estimates are used. A forecast of today's remaining
+household consumption excluding the water heater can refine today's estimate.
+The HA maximum tank temperature should not exceed
+the `max_temperature` configured in ESPHome.

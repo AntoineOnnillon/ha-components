@@ -64,6 +64,12 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     SensorEntityDescription(
+        key="thermal_charge_percent",
+        translation_key="thermal_charge_percent",
+        native_unit_of_measurement="%",
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    SensorEntityDescription(
         key="horizon_available",
         translation_key="horizon_available",
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
@@ -73,6 +79,13 @@ SENSOR_DESCRIPTIONS: tuple[SensorEntityDescription, ...] = (
     SensorEntityDescription(
         key="energy_deficit_forecast",
         translation_key="energy_deficit_forecast",
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
+    SensorEntityDescription(
+        key="daily_heater_consumption_forecast",
+        translation_key="daily_heater_consumption_forecast",
         native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.MEASUREMENT,

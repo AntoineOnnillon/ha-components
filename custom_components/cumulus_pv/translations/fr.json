@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Gestion PV du cumulus",
-        "description": "Sélectionnez les entités ESPHome et les prévisions PV. Home Assistant calcule la puissance de chauffe ; ESPHome conserve les coupures de sécurité et le thermostat de secours local.",
+        "description": "Sélectionnez les entités ESPHome et jusqu'à sept prévisions quotidiennes de production PV. Le planificateur compare la production à la consommation estimée, tient compte de l'incertitude et des pertes du ballon, et ne relève la cible que si le déficit futur justifie le stockage thermique.",
         "data": {
           "top_temperature": "Température haute du ballon",
           "heater_command": "Nombre ESPHome de commande du chauffage",
@@ -13,10 +13,16 @@
           "pv_surplus": "Capteur de surplus PV net",
           "grid_export": "Capteur de puissance injectée au réseau",
           "grid_import": "Capteur de puissance soutirée au réseau",
-          "pv_forecast": "Prévision PV du jour (kWh)",
+          "pv_forecast": "Prévision PV restante aujourd'hui (kWh)",
           "pv_forecast_d1": "Prévision PV de demain (kWh)",
           "pv_forecast_d2": "Prévision PV dans deux jours (kWh)",
-          "consumption_forecast": "Prévision de consommation restante (kWh)",
+          "pv_forecast_d3": "Prévision PV dans trois jours (kWh)",
+          "pv_forecast_d4": "Prévision PV dans quatre jours (kWh)",
+          "pv_forecast_d5": "Prévision PV dans cinq jours (kWh)",
+          "pv_forecast_d6": "Prévision PV dans six jours (kWh)",
+          "consumption_forecast": "Prévision de consommation restante hors cumulus (kWh)",
+          "house_energy": "Compteur d'énergie total de la maison (cumulus compris)",
+          "heater_energy": "Compteur cumulatif d'énergie du cumulus (facultatif)",
           "peak_hour": "Heure prévue du pic PV",
           "heater_power": "Capteur de puissance mesurée du cumulus",
           "tank_volume_l": "Volume du ballon (L)",
@@ -35,23 +41,38 @@
           "peak_end_h": "Heure de fin de la fenêtre PV",
           "peak_pad_before_h": "Heures avant le pic prévu",
           "peak_pad_after_h": "Heures après le pic prévu",
-          "daily_consumption_kwh": "Besoin énergétique quotidien prévu (kWh)",
+          "daily_consumption_kwh": "Estimation de secours de l'énergie quotidienne du cumulus (kWh)",
+          "daily_house_consumption_kwh": "Estimation de secours de la consommation quotidienne de la maison hors cumulus (kWh)",
           "horizon_days": "Horizon de planification (jours)",
-          "boost_offset_max_c": "Hausse maximale de température (°C)",
-          "deficit_offset_max_c": "Baisse maximale de température (°C)"
+          "boost_offset_max_c": "Hausse maximale en cas de manque d'énergie prévue (°C)",
+          "forecast_margin_pct": "Marge de sécurité sur la prévision PV (%)",
+          "tank_loss_pct_per_day": "Perte thermique estimée du ballon par jour (%)",
+          "recovery_value_pct": "Valeur de l'énergie réseau évitée (% du prix de base)",
+          "export_value_pct": "Valeur de l'énergie injectée (% du prix de base)"
         },
         "data_description": {
           "pv_priority_switch": "Active la consigne de puissance envoyée par Home Assistant dans le contrôleur ESPHome. Désactivez-le pour revenir au thermostat local.",
           "pv_surplus": "Utilisé lorsqu'aucun capteur d'injection réseau valide n'est sélectionné.",
           "grid_export": "Positif en cas d'injection. Prioritaire sur le capteur de surplus PV net s'il est sélectionné.",
           "grid_import": "Positif en cas de soutirage ; soustrait à l'injection pour estimer le surplus net.",
-          "heater_command": "Sélectionnez le nombre ESPHome configuré comme cumulus.heater_command (0–100 %)."
+          "consumption_forecast": "Cette prévision doit exclure la consommation du cumulus.",
+          "pv_forecast": "Sélectionnez un capteur de production PV restante aujourd'hui, en kWh.",
+          "pv_forecast_d1": "Sélectionnez un capteur de prévision PV pour demain, en kWh.",
+          "heater_command": "Sélectionnez le nombre ESPHome configuré comme cumulus.heater_command (0–100 %).",
+          "house_energy": "Compteur cumulatif facultatif de toute la maison, cumulus compris. Unités prises en charge : Wh, kWh et MWh ; la consommation journalière est apprise à partir des variations.",
+          "heater_energy": "Compteur cumulatif facultatif du cumulus. Unités prises en charge : Wh, kWh et MWh ; la consommation journalière est apprise à partir de journées complètes.",
+          "daily_consumption_kwh": "Valeur de secours jusqu'à la disponibilité d'un historique journalier complet. Sans compteur d'énergie, la consommation est estimée depuis la puissance mesurée ou la puissance nominale pondérée par la commande HA.",
+          "daily_house_consumption_kwh": "Utilisée tant que les compteurs maison et cumulus n'ont pas assez d'historique. Avec les deux compteurs, leur différence mesurée est utilisée.",
+          "forecast_margin_pct": "Réduit la production PV prévue pour tenir compte de l'incertitude des prévisions.",
+          "tank_loss_pct_per_day": "Part approximative de chaleur perdue chaque jour ; à ajuster selon l'isolation réelle du ballon.",
+          "recovery_value_pct": "Laissez 50 % si chaque kWh non repris au réseau évite seulement les frais de transport, soit la moitié du prix de base.",
+          "export_value_pct": "Valeur effective d'un kWh injecté plutôt que stocké sous forme de chaleur. Le préchauffage est ignoré si cette valeur dépasse le coût évité après pertes du ballon."
         }
       }
     },
     "error": {
       "no_surplus_source": "Sélectionnez un capteur de surplus PV ou d'injection réseau.",
-      "invalid_temperature_limits": "La température minimale doit être inférieure à la température maximale.",
+      "invalid_temperature_limits": "La cible de base doit être supérieure à la température minimale et inférieure ou égale à la température maximale.",
       "invalid_peak_window": "Les heures de début et de fin de la fenêtre PV doivent être différentes."
     }
   },
@@ -59,7 +80,7 @@
     "step": {
       "init": {
         "title": "Gestion PV du cumulus",
-        "description": "Modifiez les entités ESPHome, les sources PV et les paramètres de planification énergétique.",
+        "description": "Modifiez les entités ESPHome, les sources PV et la planification. La cible de base est conservée lorsque les prévisions suffisent ; le stockage supplémentaire dépend du déficit prévu, de l'incertitude, des pertes thermiques et de la valeur de l'énergie.",
         "data": {
           "top_temperature": "Température haute du ballon",
           "heater_command": "Nombre ESPHome de commande du chauffage",
@@ -69,10 +90,16 @@
           "pv_surplus": "Capteur de surplus PV net",
           "grid_export": "Capteur de puissance injectée au réseau",
           "grid_import": "Capteur de puissance soutirée au réseau",
-          "pv_forecast": "Prévision PV du jour (kWh)",
+          "pv_forecast": "Prévision PV restante aujourd'hui (kWh)",
           "pv_forecast_d1": "Prévision PV de demain (kWh)",
           "pv_forecast_d2": "Prévision PV dans deux jours (kWh)",
-          "consumption_forecast": "Prévision de consommation restante (kWh)",
+          "pv_forecast_d3": "Prévision PV dans trois jours (kWh)",
+          "pv_forecast_d4": "Prévision PV dans quatre jours (kWh)",
+          "pv_forecast_d5": "Prévision PV dans cinq jours (kWh)",
+          "pv_forecast_d6": "Prévision PV dans six jours (kWh)",
+          "consumption_forecast": "Prévision de consommation restante hors cumulus (kWh)",
+          "house_energy": "Compteur d'énergie total de la maison (cumulus compris)",
+          "heater_energy": "Compteur cumulatif d'énergie du cumulus (facultatif)",
           "peak_hour": "Heure prévue du pic PV",
           "heater_power": "Capteur de puissance mesurée du cumulus",
           "tank_volume_l": "Volume du ballon (L)",
@@ -91,23 +118,38 @@
           "peak_end_h": "Heure de fin de la fenêtre PV",
           "peak_pad_before_h": "Heures avant le pic prévu",
           "peak_pad_after_h": "Heures après le pic prévu",
-          "daily_consumption_kwh": "Besoin énergétique quotidien prévu (kWh)",
+          "daily_consumption_kwh": "Estimation de secours de l'énergie quotidienne du cumulus (kWh)",
+          "daily_house_consumption_kwh": "Estimation de secours de la consommation quotidienne de la maison hors cumulus (kWh)",
           "horizon_days": "Horizon de planification (jours)",
-          "boost_offset_max_c": "Hausse maximale de température (°C)",
-          "deficit_offset_max_c": "Baisse maximale de température (°C)"
+          "boost_offset_max_c": "Hausse maximale en cas de manque d'énergie prévue (°C)",
+          "forecast_margin_pct": "Marge de sécurité sur la prévision PV (%)",
+          "tank_loss_pct_per_day": "Perte thermique estimée du ballon par jour (%)",
+          "recovery_value_pct": "Valeur de l'énergie réseau évitée (% du prix de base)",
+          "export_value_pct": "Valeur de l'énergie injectée (% du prix de base)"
         },
         "data_description": {
           "pv_priority_switch": "Active la consigne de puissance envoyée par Home Assistant dans le contrôleur ESPHome. Désactivez-le pour revenir au thermostat local.",
           "pv_surplus": "Utilisé lorsqu'aucun capteur d'injection réseau valide n'est sélectionné.",
           "grid_export": "Positif en cas d'injection. Prioritaire sur le capteur de surplus PV net s'il est sélectionné.",
           "grid_import": "Positif en cas de soutirage ; soustrait à l'injection pour estimer le surplus net.",
-          "heater_command": "Sélectionnez le nombre ESPHome configuré comme cumulus.heater_command (0–100 %)."
+          "consumption_forecast": "Cette prévision doit exclure la consommation du cumulus.",
+          "pv_forecast": "Sélectionnez un capteur de production PV restante aujourd'hui, en kWh.",
+          "pv_forecast_d1": "Sélectionnez un capteur de prévision PV pour demain, en kWh.",
+          "heater_command": "Sélectionnez le nombre ESPHome configuré comme cumulus.heater_command (0–100 %).",
+          "house_energy": "Compteur cumulatif facultatif de toute la maison, cumulus compris. Unités prises en charge : Wh, kWh et MWh ; la consommation journalière est apprise à partir des variations.",
+          "heater_energy": "Compteur cumulatif facultatif du cumulus. Unités prises en charge : Wh, kWh et MWh ; la consommation journalière est apprise à partir de journées complètes.",
+          "daily_consumption_kwh": "Valeur de secours jusqu'à la disponibilité d'un historique journalier complet. Sans compteur d'énergie, la consommation est estimée depuis la puissance mesurée ou la puissance nominale pondérée par la commande HA.",
+          "daily_house_consumption_kwh": "Utilisée tant que les compteurs maison et cumulus n'ont pas assez d'historique. Avec les deux compteurs, leur différence mesurée est utilisée.",
+          "forecast_margin_pct": "Réduit la production PV prévue pour tenir compte de l'incertitude des prévisions.",
+          "tank_loss_pct_per_day": "Part approximative de chaleur perdue chaque jour ; à ajuster selon l'isolation réelle du ballon.",
+          "recovery_value_pct": "Laissez 50 % si chaque kWh non repris au réseau évite seulement les frais de transport, soit la moitié du prix de base.",
+          "export_value_pct": "Valeur effective d'un kWh injecté plutôt que stocké sous forme de chaleur. Le préchauffage est ignoré si cette valeur dépasse le coût évité après pertes du ballon."
         }
       }
     },
     "error": {
       "no_surplus_source": "Sélectionnez un capteur de surplus PV ou d'injection réseau.",
-      "invalid_temperature_limits": "La température minimale doit être inférieure à la température maximale.",
+      "invalid_temperature_limits": "La cible de base doit être supérieure à la température minimale et inférieure ou égale à la température maximale.",
       "invalid_peak_window": "Les heures de début et de fin de la fenêtre PV doivent être différentes."
     }
   },
@@ -131,11 +173,17 @@
       "effective_target": {
         "name": "Cible effective du ballon"
       },
+      "thermal_charge_percent": {
+        "name": "Charge thermique estimée"
+      },
       "horizon_available": {
         "name": "Énergie disponible sur l'horizon"
       },
       "energy_deficit_forecast": {
         "name": "Déficit énergétique prévu"
+      },
+      "daily_heater_consumption_forecast": {
+        "name": "Prévision de consommation journalière du cumulus"
       },
       "peak_window_active": {
         "name": "Fenêtre de pic PV active"
