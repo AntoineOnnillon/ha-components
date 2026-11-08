@@ -168,45 +168,40 @@ class AtlanticHeatPumpController:
                 )
                 return
 
-            positive_deficits = []
-            negative_deficits = []
+            weighted_differences = []
             for room in heating_rooms:
                 current = self._number(room.attributes.get("current_temperature"))
                 target = self._number(room.attributes.get("temperature"))
-                if current is not None and target is not None:
-                    weight = self.room_weights.get(room.entity_id, DEFAULT_ROOM_WEIGHT)
-                    if weight == 0:
-                        continue
-                    deficit = target - current
-                    if deficit > 0:
-                        positive_deficits.append(deficit * weight / 100.0)
-                    elif deficit < 0:
-                        negative_deficits.append(deficit / (weight / 100.0))
+                if current is None or target is None:
+                    continue
+                weight = self.room_weights.get(room.entity_id, DEFAULT_ROOM_WEIGHT)
+                deficit = target - current
+                if weight == 0 or deficit == 0:
+                    weighted_differences.append(0.0)
+                elif deficit > 0:
+                    weighted_differences.append(deficit * weight / 100.0)
+                else:
+                    weighted_differences.append(deficit / (weight / 100.0))
 
-            if not positive_deficits and not negative_deficits:
+            if not weighted_differences:
                 _LOGGER.warning(
                     "Cannot calculate the Atlantic setpoint: heating room climates have no "
                     "valid current and target temperatures"
                 )
                 return
 
-            heating_deficits = [
-                deficit for deficit in positive_deficits if deficit > self.deadband
-            ]
-            if heating_deficits:
-                largest_deficit = max(heating_deficits)
-                delta = self._delta_for_deficit(largest_deficit)
-            elif negative_deficits and min(negative_deficits) < -self.deadband:
-                largest_deficit = min(negative_deficits)
-                delta = max(-self.delta_max, largest_deficit)
+            selected_difference = max(weighted_differences)
+            if selected_difference > self.deadband:
+                delta = self._delta_for_deficit(selected_difference)
+            elif selected_difference < -self.deadband:
+                delta = max(-self.delta_max, selected_difference)
             else:
-                largest_deficit = max(positive_deficits, default=0.0)
                 delta = 0.0
             target_temperature = self._round_half_degree(
                 min(28.0, max(15.0, reference_temperature + delta))
             )
             self._set_diagnostics(
-                largest_room_difference=largest_deficit,
+                largest_room_difference=selected_difference,
                 applied_delta=delta,
                 calculated_target=target_temperature,
             )

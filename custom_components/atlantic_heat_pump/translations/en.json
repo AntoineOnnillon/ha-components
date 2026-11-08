@@ -11,7 +11,7 @@
           "delta_max": "Maximum temperature offset (°C)"
         },
         "data_description": {
-          "deadband": "Temperature differences within this range produce no offset. Above it, the largest room deficit raises the target; if all heating rooms are above their setpoints, the smallest overshoot lowers it. Default: 0.2 °C.",
+          "deadband": "Differences within this range produce no offset. Above it, the largest weighted room deficit raises the target; if all rooms exceed their setpoints, the largest weighted difference lowers it. Default: 0.2 °C.",
           "delta_max": "Maximum absolute offset from the Atlantic climate's current temperature. Default: 6 °C."
         }
       },
@@ -43,7 +43,7 @@
           "delta_max": "Maximum temperature offset (°C)"
         },
         "data_description": {
-          "deadband": "Temperature differences within this range produce no offset. Above it, the largest room deficit raises the target; if all heating rooms are above their setpoints, the smallest overshoot lowers it. Default: 0.2 °C.",
+          "deadband": "Differences within this range produce no offset. Above it, the largest weighted room deficit raises the target; if all rooms exceed their setpoints, the largest weighted difference lowers it. Default: 0.2 °C.",
           "delta_max": "Maximum absolute offset from the Atlantic climate's current temperature. Default: 6 °C."
         }
       },
@@ -69,7 +69,7 @@
         "name": "Atlantic current temperature"
       },
       "largest_room_difference": {
-        "name": "Largest TRV temperature difference"
+        "name": "Largest weighted TRV difference"
       },
       "applied_delta": {
         "name": "Applied temperature offset"
