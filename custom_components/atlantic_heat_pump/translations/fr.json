@@ -22,7 +22,7 @@
           "room_weight": "Poids d'influence (%)"
         },
         "data_description": {
-          "room_weight": "100 % applique tout l'écart de température de la pièce. Une valeur plus faible réduit son influence ; 0 % l'ignore."
+          "room_weight": "Sous la consigne de la pièce, une valeur faible réduit son influence sur la demande de chauffage. Au-dessus de la consigne, elle amplifie sa contribution à la baisse de la cible Atlantic. 0 % ignore la pièce."
         }
       }
     },
@@ -54,7 +54,7 @@
           "room_weight": "Poids d'influence (%)"
         },
         "data_description": {
-          "room_weight": "100 % applique tout l'écart de température de la pièce. Une valeur plus faible réduit son influence ; 0 % l'ignore."
+          "room_weight": "Sous la consigne de la pièce, une valeur faible réduit son influence sur la demande de chauffage. Au-dessus de la consigne, elle amplifie sa contribution à la baisse de la cible Atlantic. 0 % ignore la pièce."
         }
       }
     },

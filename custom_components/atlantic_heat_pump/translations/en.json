@@ -22,7 +22,7 @@
           "room_weight": "Room influence (%)"
         },
         "data_description": {
-          "room_weight": "100% applies the full room temperature difference. Lower values reduce this room's influence; 0% ignores it."
+          "room_weight": "Below the room setpoint, lower values reduce its heating influence. Above the setpoint, lower values amplify its contribution to reducing the Atlantic target. 0% ignores the room."
         }
       }
     },
@@ -54,7 +54,7 @@
           "room_weight": "Room influence (%)"
         },
         "data_description": {
-          "room_weight": "100% applies the full room temperature difference. Lower values reduce this room's influence; 0% ignores it."
+          "room_weight": "Below the room setpoint, lower values reduce its heating influence. Above the setpoint, lower values amplify its contribution to reducing the Atlantic target. 0% ignores the room."
         }
       }
     },
